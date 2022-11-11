@@ -25,10 +25,5 @@ node
          sh " scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@65.0.205.44:/opt/apache-tomcat-9.0.68/webapps "  
        }
    }
-   stage('SendEmailNotification')
-   {
-       mail bcc: '', body: '''hello you build is over and succesfull 
-Regard 
-DevOps ''', cc: '', from: '', replyTo: '', subject: 'Regard build and deploy', to: 'nayak.tekbabu@gmail.com'
-   }
+   
 }
