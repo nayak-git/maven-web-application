@@ -1,0 +1,34 @@
+node 
+{
+     def mavenHome = tool name:"maven_3.8.6"
+    stage('checkoutcode')
+{
+    git branch: 'development ', credentialsId: '54caff54-387c-4f67-8f77-c0e711acdf30', url: 'https://github.com/nayak-git/maven-web-application.git'
+}
+   stage('Build')
+   {
+       sh " ${mavenHome}/bin/mvn clean package"
+   }
+   
+   stage('ExecuteSonarQubeReport')
+   {
+    sh "${mavenHome}/bin/mvn sonar:sonar"   
+   }
+   stage('UploadArctiFactIntoNexus')
+   {
+       sh "${mavenHome}/bin/mvn clean deploy"
+   }
+   stage('DeployApplicationIntoTomcat')
+   {
+       sshagent(['4b42dbbf-697f-40d7-8731-d92121804560'])
+       {
+         sh " scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@65.0.205.44:/opt/apache-tomcat-9.0.68/webapps "  
+       }
+   }
+   stage('SendEmailNotification')
+   {
+       mail bcc: '', body: '''hello you build is over and succesfull 
+Regard 
+DevOps ''', cc: '', from: '', replyTo: '', subject: 'Regard build and deploy', to: 'nayak.tekbabu@gmail.com'
+   }
+}
