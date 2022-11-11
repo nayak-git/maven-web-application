@@ -1,6 +1,7 @@
 node 
 {
      def mavenHome = tool name:"maven_3.8.6"
+     properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')), pipelineTriggers([pollSCM(ignorePostCommitHooks: true, scmpoll_spec: '* * * * *')])])
     stage('checkoutcode')
 {
     git branch: 'development ', credentialsId: '54caff54-387c-4f67-8f77-c0e711acdf30', url: 'https://github.com/nayak-git/maven-web-application.git'
